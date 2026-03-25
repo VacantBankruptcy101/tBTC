@@ -12,7 +12,9 @@ contract tBTCNFTMinter is ERC721, ERC721Enumerable, ReentrancyGuard, AccessContr
     
     using Strings for uint256;
     
-    tBTCToken public tBTCToken;
+    // FIXED: Changed variable name from 'tBTCToken' to 'tbtcToken' to avoid shadowing
+    tBTCToken public tbtcToken;
+    
     uint256 private _tokenIdCounter;
     
     enum Tier { Bronze, Silver, Gold, Platinum, Diamond }
@@ -46,7 +48,8 @@ contract tBTCNFTMinter is ERC721, ERC721Enumerable, ReentrancyGuard, AccessContr
         string memory _symbol,
         bool _isTestnet
     ) ERC721(_name, _symbol) {
-        tBTCToken = tBTCToken(_tBTCToken);
+        // FIXED: Updated reference to match new variable name
+        tbtcToken = tBTCToken(_tBTCToken);
         isTestnet = _isTestnet;
         testnetMultiplier = _isTestnet ? 100 : 1;
         
@@ -80,8 +83,9 @@ contract tBTCNFTMinter is ERC721, ERC721Enumerable, ReentrancyGuard, AccessContr
         
         uint256 burnAmount = tier.burnAmount;
         
+        // FIXED: Updated reference to match new variable name
         require(
-            tBTCToken.transferFrom(msg.sender, BURN_ADDRESS, burnAmount),
+            tbtcToken.transferFrom(msg.sender, BURN_ADDRESS, burnAmount),
             "Transfer failed"
         );
         
@@ -110,8 +114,9 @@ contract tBTCNFTMinter is ERC721, ERC721Enumerable, ReentrancyGuard, AccessContr
         
         uint256 totalBurn = tier.burnAmount * _quantity;
         
+        // FIXED: Updated reference to match new variable name
         require(
-            tBTCToken.transferFrom(msg.sender, BURN_ADDRESS, totalBurn),
+            tbtcToken.transferFrom(msg.sender, BURN_ADDRESS, totalBurn),
             "Transfer failed"
         );
         
