@@ -93,7 +93,7 @@ contract TokenBurnNFTMinter is
     function mint(
         string memory _tokenURI
     ) external nonReentrant whenNotPaused returns (uint256) {
-        return _mintSingleNFT(msg.sender, _tokenURI);
+        return _mintSingleNFT(_tokenURI);
     }
     
     /**
@@ -111,7 +111,7 @@ contract TokenBurnNFTMinter is
         uint256[] memory tokenIds = new uint256[](_quantity);
         
         for (uint256 i = 0; i < _quantity; i++) {
-            tokenIds[i] = _mintSingleNFT(msg.sender, _tokenURIs[i]);
+            tokenIds[i] = _mintSingleNFT(_tokenURIs[i]);
         }
         
         return tokenIds;
@@ -144,14 +144,14 @@ contract TokenBurnNFTMinter is
         }
         
         // Check per-wallet limit (skip for admin mints)
-        if (msg.sender == _to) {
+        if (_to) {
             if (mintedCount[_to] >= maxMintPerWallet) {
                 revert MaxMintPerWalletReached(_to, maxMintPerWallet);
             }
         }
         
         // Check and burn tokens (skip for admin mints)
-        if (msg.sender == _to) {
+        if (_to) {
             uint256 requiredBalance = burnAmountPerNFT;
             uint256 userBalance = burnToken.balanceOf(_to);
             
@@ -173,7 +173,7 @@ contract TokenBurnNFTMinter is
         _safeMint(_to, newTokenId);
         _setTokenURI(newTokenId, _tokenURI);
         
-        emit NFTMinted(_to, newTokenId, msg.sender == _to ? burnAmountPerNFT : 0);
+        emit NFTMinted(_to, newTokenId, _to ? burnAmountPerNFT : 0);
         
         return newTokenId;
     }
